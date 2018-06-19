@@ -6,12 +6,12 @@ class KamigoController < ApplicationController
     # 設定回覆文字
     reply_text = keyword_reply(received_text)
 
-    # 傳送訊息到line
+    # 傳送訊息到 line
     response = reply_to_line(reply_text)
-      
+    
     # 回應 200
     head :ok
-  end
+  end 
 
   # 取得對方說的話
   def received_text
@@ -33,16 +33,17 @@ class KamigoController < ApplicationController
 
   # 傳送訊息到 line
   def reply_to_line(reply_text)
-  	return nil if reply_text.nil?
-  	# 取得 reply token
-    reply_token = params['events'][0]['replyToken']
-
-    #設定回覆訊息
-    message = {
-    	type: 'text'
-    	text: reply_text
-    }
+    return nil if reply_text.nil?
     
+    # 取得 reply token
+    reply_token = params['events'][0]['replyToken']
+    
+    # 設定回覆訊息
+    message = {
+      type: 'text',
+      text: reply_text
+    } 
+
     # 傳送訊息
     line.reply_message(reply_token, message)
   end
