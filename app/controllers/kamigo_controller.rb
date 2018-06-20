@@ -59,6 +59,12 @@ class KamigoController < ApplicationController
   	Rceived.create(channel_id: channel_id, text:received_text)
   end
 
+  # 儲存回應
+  def save_to_reply(channel_id, reply_text)
+    return if reply_text.nil?
+    Reply.create(channel_id: channel_id, text: reply_text)
+  end
+
   def echo2(channel_id, received_text)
     # 如果在 channel_id 最近沒人講過 received_text，卡米狗就不回應
     recent_received_texts = Received.where(channel_id: channel_id).last(5)&.pluck(:text)
