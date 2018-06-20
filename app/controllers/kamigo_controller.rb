@@ -9,6 +9,13 @@ class KamigoController < ApplicationController
     # 設定回覆文字
     reply_text = keyword_reply(received_text) if reply_text.nil?
 
+    #推齊
+    reply_text = echo2(channel_id, received_text) if reply_text.nil?
+
+    #記錄對話
+    save_to_received(channel_id, received_text)
+    save_to_reply(channel_id, reply_text)
+
     # 傳送訊息到 line
     response = reply_to_line(reply_text)
     
