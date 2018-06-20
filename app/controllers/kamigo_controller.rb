@@ -47,6 +47,30 @@ class KamigoController < ApplicationController
     '好哦～好哦～'
   end
 
+  #頻道ID
+  def channel_id
+  	source = params['events'][0]['source']
+  	source['groupId'] || source['roomId'] || source['userId']
+  end
+
+  #儲存對話
+  def save_to_received(channel_id, received_text)
+  	return if received_text.nil?
+  	Rceived.create(channel_id: channel_id, text:received_text)
+  end
+
+  def echo2(channel_id, received_text)
+    # 如果在 channel_id 最近沒人講過 received_text，卡米狗就不回應
+    recent_received_texts = Received.where(channel_id: channel_id).last(5)&.pluck(:text)
+    return nil unless received_text.in? recent_received_texts
+    
+    # 如果在 channel_id 卡米狗上一句回應是 received_text，卡米狗就不回應
+    last_reply_text = Reply.where(channel_id: channel_id).last&.text
+    return nil if last_reply_text == received_text
+
+    received_text
+  end
+
   # 關鍵字回覆
   def keyword_reply(received_text)
     KeywordMapping.where(keyword: received_text).last&.message
