@@ -16,11 +16,17 @@ class KamigoController < ApplicationController
     head :ok
   end 
 
-  #學說話
-  def learn(received_text)
-  	#如果開頭不是 卡米狗學說話; 就跳出
-    return nil unless received_text[0..6] == '卡米狗學說話;'
+  # 取得對方說的話
+  def received_text
+    message = params['events'][0]['message']
+    message['text'] unless message.nil?
+  end
 
+  # 學說話
+  def learn(received_text)
+    #如果開頭不是 卡米狗學說話; 就跳出
+    return nil unless received_text[0..6] == '卡米狗學說話;'
+    
     received_text = received_text[7..-1]
     semicolon_index = received_text.index(';')
 
@@ -32,13 +38,6 @@ class KamigoController < ApplicationController
 
     KeywordMapping.create(keyword: keyword, message: message)
     '好哦～好哦～'
-
-  end
-
-  # 取得對方說的話
-  def received_text
-    message = params['events'][0]['message']
-    message['text'] unless message.nil?
   end
 
   # 關鍵字回覆
