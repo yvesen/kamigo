@@ -1,3 +1,4 @@
+require 'line/bot'
 class PushMessagesController < ApplicationController
 	before_action :authenticate_user!
 
